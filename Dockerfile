@@ -21,7 +21,7 @@ RUN yum -y install mysql-community-client mysql-community-devel
 
 # flask
 RUN git clone https://github.com/gureuso/movie-api.git
-WORKDIR /root/flask
+WORKDIR /root/movie-api
 RUN pip install virtualenv
 RUN virtualenv -p python3 venv
 RUN . venv/bin/activate
