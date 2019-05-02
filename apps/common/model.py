@@ -27,12 +27,13 @@ class ShowtimesMoviesModel:
         for showtime in movie.showtimes:
             theater = showtime.theater
             seat_cnt = TheaterTicket.query.filter_by(theater_id=theater.id, showtime_id=showtime.id).count()
-            theater.seat -= seat_cnt
+            theater_seat = theater.seat
+            theater_seat -= seat_cnt
 
             showtime_result = showtime.asdict()
             showtime_result['start_time'] = showtime_result['start_time'].strftime('%Y%m%d%H%M')
             showtime_result['end_time'] = showtime_result['end_time'].strftime('%Y%m%d%H%M')
-            showtime_result['theater'] = theater.asdict()
+            showtime_result['theater'] = dict(cinema_id=theater.cinema_id, title=theater.title, seat=theater_seat)
             showtimes_result.append(showtime_result)
         return showtimes_result
 
