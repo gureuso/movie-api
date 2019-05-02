@@ -33,7 +33,8 @@ class ShowtimesMoviesModel:
             showtime_result = showtime.asdict()
             showtime_result['start_time'] = showtime_result['start_time'].strftime('%Y%m%d%H%M')
             showtime_result['end_time'] = showtime_result['end_time'].strftime('%Y%m%d%H%M')
-            showtime_result['theater'] = dict(cinema_id=theater.cinema_id, title=theater.title, seat=theater_seat)
+            showtime_result['theater'] = dict(id=theater.id, cinema_id=theater.cinema_id, title=theater.title,
+                                              seat=theater_seat)
             showtimes_result.append(showtime_result)
         return showtimes_result
 
