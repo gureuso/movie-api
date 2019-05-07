@@ -3,7 +3,6 @@
 *.pyc
 .idea/
 venv/
-migrations/versions/*.py
 
 # mac
 .DS_Store
