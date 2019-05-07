@@ -8,6 +8,7 @@ class Config(object):
     STATIC_DIR = '{0}/static'.format(ROOT_DIR)
     TEMPLATES_DIR = '{0}/templates'.format(ROOT_DIR)
     ERROR_CODE = {
+        40000: 'Bad Request',
         40300: 'Forbidden',
         40400: 'Not Found',
         41000: 'Gone',

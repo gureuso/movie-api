@@ -11,8 +11,8 @@ class User(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     email = Column(String(120), unique=True)
     nickname = Column(String(20), unique=True)
-    password = Column(String(255), unique=True)
-    phone_number = Column(String(20), unique=True)
+    password = Column(String(255))
+    phone_number = Column(String(20))
     age = Column(Integer)
     profile_url = Column(Text)
 

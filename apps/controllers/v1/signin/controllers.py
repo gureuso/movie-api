@@ -17,8 +17,10 @@ app = Blueprint('v1_login', __name__, url_prefix='/v1/signin')
 @app.route('', methods=['post'])
 def create():
     form = request.form
-    email = form['email']
-    password = form['password']
+    email = form.get('email')
+    password = form.get('password')
+    if not (email and password):
+        return error(40000)
 
     password = hashlib.sha256(password.encode('utf-8')).hexdigest()
     user = User.query.filter_by(email=email, password=password).first()
