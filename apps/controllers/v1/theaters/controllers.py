@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint
 
-from apps.common.decorator import login_required
 from apps.common.response import ok, error
 from apps.models.showtimes import Showtime
 from apps.models.theaters import Theater
@@ -11,7 +10,6 @@ app = Blueprint('v1_theaters', __name__, url_prefix='/v1/theaters')
 
 
 @app.route('/<int:theater_id>/showtimes/<int:showtime_id>', methods=['get'])
-@login_required
 def detail(theater_id, showtime_id):
     showtime = Showtime.query.filter_by(id=showtime_id, theater_id=theater_id).first()
     if not showtime:

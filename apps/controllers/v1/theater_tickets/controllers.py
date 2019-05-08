@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, request
 
-from apps.common.decorator import login_required
 from apps.common.response import ok, error
 from apps.common.database import db_session
 from apps.models.theater_tickets import TheaterTicket
@@ -11,7 +10,6 @@ app = Blueprint('v1_theater_tickets', __name__, url_prefix='/v1/theater_tickets'
 
 
 @app.route('', methods=['post'])
-@login_required
 def create():
     form = request.form
     theater_id = form['theater_id']
