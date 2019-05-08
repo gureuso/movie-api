@@ -83,8 +83,10 @@ def callback():
 
     user = User.query.filter_by(email=data['email']).first()
     if not user:
-        u = User(email=data['email'], nickname=data['name'], profile_url=data['picture'], google_id=google_id)
-        db_session.add(u)
+        user = User(email=data['email'], nickname=data['name'], profile_url=data['picture'], google_id=google_id)
+        db_session.add(user)
         db_session.commit()
 
-    return ok()
+    res = {'nickname': user.nickname, 'email': user.email, 'age': user.age, 'phone_number': user.phone_number,
+           'profile_url': user.profile_url, 'token': user.token}
+    return ok(res)
