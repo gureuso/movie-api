@@ -77,12 +77,13 @@ def callback():
     if id_info['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
         return error(50000, 'wrong issuer')
 
+    google_id = id_info['sub']
     res = requests.get('https://www.googleapis.com/oauth2/v3/tokeninfo', {'id_token': id_token})
     data = res.json()
 
     user = User.query.filter_by(email=data['email']).first()
     if not user:
-        u = User(email=data['email'], nickname=data['name'], profile_url=data['picture'])
+        u = User(email=data['email'], nickname=data['name'], profile_url=data['picture'], google_id=google_id)
         db_session.add(u)
         db_session.commit()
 

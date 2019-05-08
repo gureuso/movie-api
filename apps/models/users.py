@@ -27,9 +27,10 @@ class User(Base):
     age = Column(Integer)
     profile_url = Column(Text)
     token = Column(String(40), unique=True, default=get_token())
+    google_id = Column(String(40), unique=True)
 
     def __init__(self, email=None, nickname=None, password=None, phone_number=None, age=None, profile_url=None,
-                 token=None):
+                 token=None, google_id=None):
         self.email = email
         self.nickname = nickname
         self.password = password
@@ -37,6 +38,7 @@ class User(Base):
         self.age = age
         self.profile_url = profile_url
         self.token = token
+        self.google_id = google_id
 
     def __repr__(self):
         return '<User {}>'.format(self.id)
