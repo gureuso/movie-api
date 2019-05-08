@@ -4,12 +4,14 @@ from flask import Blueprint, request
 
 from apps.common.model import ShowtimesMoviesModel
 from apps.common.response import ok
+from apps.common.decorator import login_required
 from apps.models.cinemas import Cinema
 
 app = Blueprint('v1_showtimes', __name__, url_prefix='/v1/showtimes')
 
 
 @app.route('', methods=['get'])
+@login_required
 def main():
     args = request.args
     movie_id = args.get('movie_id', 0)
