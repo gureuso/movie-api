@@ -29,7 +29,7 @@ def signin():
         return error(40400)
 
     res = {'nickname': user.nickname, 'email': user.email, 'age': user.age, 'phone_number': user.phone_number,
-           'profile_url': user.profile_url}
+           'profile_url': user.profile_url, 'token': user.token}
     return ok(res)
 
 
@@ -53,10 +53,7 @@ def signup():
     user = User(email=email, nickname=nickname, password=password, phone_number=phone, age=age)
     db_session.add(user)
     db_session.commit()
-
-    res = {'nickname': user.nickname, 'email': user.email, 'age': user.age, 'phone_number': user.phone_number,
-           'profile_url': user.profile_url}
-    return ok(res)
+    return ok()
 
 
 @app.route('/callback', methods=['post'])
