@@ -19,7 +19,7 @@ def main():
     now = datetime.now()
     now_weekday = now.weekday()
 
-    selected_date = args.get('date', now.strftime('%Y%m%d'))
+    selected_date = args.get('date', now.strftime('%Y-%m-%d'))
     selected_cinema_id = args.get('cinema_id', Cinema.query.first().id)
     selected = {'date': selected_date, 'cinema_id': selected_cinema_id, 'movie_id': movie_id}
 
@@ -27,7 +27,7 @@ def main():
         day = i - now_weekday
         date = now + timedelta(days=day)
         i %= 7
-        week_list.append({'weekday': week[i], 'date': date.strftime('%Y%m%d')})
+        week_list.append({'weekday': week[i], 'date': date.strftime('%Y-%m-%d')})
 
     movies = ShowtimesMoviesModel(movie_id=movie_id, selected_date=selected_date,
                                   cinema_id=selected_cinema_id).result()

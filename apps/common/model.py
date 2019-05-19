@@ -23,8 +23,10 @@ class ShowtimesMoviesModel:
 
     def get_showtimes_as_dict(self, movie):
         showtimes_result = []
-        movie.showtimes = sorted(movie.showtimes, key=lambda movie: movie.start_time)
-        for showtime in movie.showtimes:
+        showtimes = Showtime.query.filter(Showtime.start_time.like(self.selected_date+'%'),
+                                          Showtime.movie_id == movie.id).all()
+        showtimes = sorted(showtimes, key=lambda movie: movie.start_time)
+        for showtime in showtimes:
             theater = showtime.theater
             seat_cnt = TheaterTicket.query.filter_by(theater_id=theater.id, showtime_id=showtime.id).count()
             theater_seat = theater.seat
