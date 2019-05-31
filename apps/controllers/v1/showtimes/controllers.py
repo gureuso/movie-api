@@ -2,7 +2,7 @@
 from datetime import datetime, timedelta
 from flask import Blueprint, request
 
-from apps.common.model import ShowtimesMoviesModel
+from apps.common.model import Movies
 from apps.common.response import ok
 from apps.models.cinemas import Cinema
 
@@ -29,6 +29,5 @@ def main():
         i %= 7
         week_list.append({'weekday': week[i], 'date': date.strftime('%Y-%m-%d')})
 
-    movies = ShowtimesMoviesModel(movie_id=movie_id, selected_date=selected_date,
-                                  cinema_id=selected_cinema_id).result()
+    movies = Movies(movie_id=movie_id, selected_date=selected_date, cinema_id=selected_cinema_id).result()
     return ok(dict(week=week_list, selected=selected, movies=movies, now=now.strftime('%Y%m%d%H%M')))
