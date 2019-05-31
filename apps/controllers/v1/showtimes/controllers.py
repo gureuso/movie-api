@@ -30,4 +30,4 @@ def main():
         week_list.append({'weekday': week[i], 'date': date.strftime('%Y-%m-%d')})
 
     movies = Movies(movie_id=movie_id, selected_date=selected_date, cinema_id=selected_cinema_id).result()
-    return ok(dict(week=week_list, selected=selected, movies=movies, now=now.strftime('%Y%m%d%H%M')))
+    return ok(dict(week=week_list, selected=selected, movies=movies))
