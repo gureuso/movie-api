@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint
+from sqlalchemy import func
 
 from apps.common.response import ok, error
 from apps.models.showtimes import Showtime
@@ -11,7 +12,8 @@ app = Blueprint('v1_theaters', __name__, url_prefix='/v1/theaters')
 
 @app.route('/<int:theater_id>/showtimes/<int:showtime_id>', methods=['get'])
 def detail(theater_id, showtime_id):
-    showtime = Showtime.query.filter_by(id=showtime_id, theater_id=theater_id).first()
+    showtime = Showtime.query.filter_by(id=showtime_id, theater_id=theater_id)\
+        .filter(Showtime.start_time > func.now()).first()
     if not showtime:
         return error(40400)
 
