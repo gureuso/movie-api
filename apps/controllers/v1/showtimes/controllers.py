@@ -11,16 +11,15 @@ app = Blueprint('v1_showtimes', __name__, url_prefix='/v1/showtimes')
 
 @app.route('', methods=['get'])
 def main():
-    args = request.args
-    movie_id = args.get('movie_id', 0)
-
     week = {0: 'mon', 1: 'tue', 2: 'wed', 3: 'thu', 4: 'fri', 5: 'sat', 6: 'sun'}
     week_list = []
     now = datetime.now()
     now_weekday = now.weekday()
 
+    args = request.args
+    movie_id = args.get('movie_id')
     selected_date = args.get('date', now.strftime('%Y-%m-%d'))
-    selected_cinema_id = args.get('cinema_id', Cinema.query.first().id)
+    selected_cinema_id = args.get('cinema_id')
     selected = {'date': selected_date, 'cinema_id': selected_cinema_id, 'movie_id': movie_id}
 
     for i in range(now_weekday, now_weekday+7):
