@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
-from apps.controllers.router import app
-from apps.common.commands.manager import manager
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from config import Config
 
-application = app
+activate_this = '{0}/venv/bin/activate_this.py'.format(Config.ROOT_DIR)
+with open(activate_this) as f:
+    exec(f.read(), dict(__file__=activate_this))
 
-if Config.APP_VENV == 'true':
-    activate_this = '{0}/venv/bin/activate_this.py'.format(Config.ROOT_DIR)
-    exec(open(activate_this).read())
+from apps.controllers.router import app as application
+from apps.common.commands.manager import manager
 
 if __name__ == '__main__':
     manager.run()

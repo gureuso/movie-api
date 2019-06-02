@@ -1,10 +1,22 @@
 # -*- coding: utf-8 -*-
 import os
+import json
+
+
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+class JsonConfig:
+    DATA = json.loads(open('{}/config.json'.format(ROOT_DIR)).read())
+
+    @staticmethod
+    def get_data(varname, value=None):
+        return JsonConfig.DATA.get(varname) or os.getenv(varname) or value
 
 
 # app config
 class Config(object):
-    ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+    ROOT_DIR = ROOT_DIR
     STATIC_DIR = '{0}/static'.format(ROOT_DIR)
     TEMPLATES_DIR = '{0}/templates'.format(ROOT_DIR)
     ERROR_CODE = {
@@ -19,21 +31,20 @@ class Config(object):
     APP_MODE_DEVELOPMENT = 'development'
     APP_MODE_TESTING = 'testing'
 
-    APP_MODE = os.getenv('APP_MODE', APP_MODE_PRODUCTION)
-    APP_VENV = os.getenv('APP_VENV', 'true')
-    APP_HOST = os.getenv('APP_HOST', '0.0.0.0')
-    APP_PORT = int(os.getenv('APP_PORT', 80))
+    APP_MODE = JsonConfig.get_data('APP_MODE', APP_MODE_PRODUCTION)
+    APP_HOST = JsonConfig.get_data('APP_HOST', '0.0.0.0')
+    APP_PORT = int(JsonConfig.get_data('APP_PORT', 80))
 
-    DB_USER_NAME = os.getenv('DB_USER_NAME') or os.getenv('RDS_USERNAME') or 'root'
-    DB_USER_PASSWD = os.getenv('DB_USER_PASSWD') or os.getenv('RDS_PASSWORD') or 'asdf1234'
-    DB_HOST = os.getenv('DB_HOST') or os.getenv('RDS_HOSTNAME') or 'localhost'
-    DB_NAME = os.getenv('DB_NAME') or os.getenv('RDS_DB_NAME') or 'movie'
+    DB_USER_NAME = JsonConfig.get_data('DB_USER_NAME','root')
+    DB_USER_PASSWD = JsonConfig.get_data('DB_USER_PASSWD', 'asdf1234')
+    DB_HOST = JsonConfig.get_data('DB_HOST', 'localhost')
+    DB_NAME = JsonConfig.get_data('DB_NAME', 'movie')
 
-    REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
-    REDIS_PASSWD = os.getenv('REDIS_PASSWD')
+    REDIS_HOST = JsonConfig.get_data('REDIS_HOST', 'localhost')
+    REDIS_PASSWD = JsonConfig.get_data('REDIS_PASSWD')
 
-    GOOGLE_CLIENT_ID = '485933391623-5806uemc2ksqf7q7gjoturtqhl0110k4.apps.googleusercontent.com'
-    GOOGLE_SECRET = 'TeXDPaBpTmAkAptntd40zP5p'
+    GOOGLE_CLIENT_ID = JsonConfig.get_data('GOOGLE_CLIENT_ID')
+    GOOGLE_SECRET = JsonConfig.get_data('GOOGLE_SECRET')
 
     @staticmethod
     def from_app_mode():
