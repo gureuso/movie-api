@@ -2,7 +2,7 @@
 from datetime import datetime, timedelta
 from flask import Blueprint, request
 
-from apps.common.model import Movies
+from apps.common.models import Movies
 from apps.common.response import ok
 from apps.models.cinemas import Cinema
 
