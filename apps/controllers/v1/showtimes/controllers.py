@@ -4,7 +4,7 @@ from flask import Blueprint, request
 
 from apps.common.models import Movies
 from apps.common.response import ok
-from apps.models.cinemas import Cinema
+from apps.common.time import utc_to_local
 
 app = Blueprint('v1_showtimes', __name__, url_prefix='/v1/showtimes')
 
@@ -13,7 +13,7 @@ app = Blueprint('v1_showtimes', __name__, url_prefix='/v1/showtimes')
 def main():
     week = {0: 'mon', 1: 'tue', 2: 'wed', 3: 'thu', 4: 'fri', 5: 'sat', 6: 'sun'}
     week_list = []
-    now = datetime.now()
+    now = utc_to_local(datetime.now())
     now_weekday = now.weekday()
 
     args = request.args
