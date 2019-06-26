@@ -2,9 +2,8 @@
 from flask import Blueprint, request
 
 from apps.common.response import ok, error
-from apps.common.database import db_session
-from apps.models.theater_tickets import TheaterTicket
-from apps.models.showtimes import Showtime
+from apps.database.session import db
+from apps.database.models import TheaterTicket, Showtime
 
 app = Blueprint('v1_theater_tickets', __name__, url_prefix='/v1/theater_tickets')
 
@@ -22,6 +21,6 @@ def create():
         return error(40400)
 
     theater_ticket = TheaterTicket(theater_id=theater_id, showtime_id=showtime_id, x=x, y=y)
-    db_session.add(theater_ticket)
-    db_session.commit()
+    db.session.add(theater_ticket)
+    db.session.commit()
     return ok()

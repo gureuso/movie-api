@@ -8,8 +8,8 @@ from flask import Blueprint, request
 from sqlalchemy import or_
 
 from apps.common.response import error, ok
-from apps.common.database import db_session
-from apps.models.users import User
+from apps.database.session import db
+from apps.database.models import User
 from config import Config
 
 app = Blueprint('v1_users', __name__, url_prefix='/v1/users')
@@ -51,8 +51,8 @@ def signup():
 
     password = hashlib.sha256(password.encode('utf-8')).hexdigest()
     user = User(email=email, nickname=nickname, password=password, phone_number=phone, age=age)
-    db_session.add(user)
-    db_session.commit()
+    db.session.add(user)
+    db.session.commit()
     return ok()
 
 
@@ -83,8 +83,8 @@ def callback():
     user = User.query.filter_by(email=data['email']).first()
     if not user:
         user = User(email=data['email'], nickname=data['name'], profile_url=data['picture'])
-        db_session.add(user)
-        db_session.commit()
+        db.session.add(user)
+        db.session.commit()
 
     res = {'nickname': user.nickname, 'email': user.email, 'age': user.age, 'phone_number': user.phone_number,
            'profile_url': user.profile_url, 'token': user.token}

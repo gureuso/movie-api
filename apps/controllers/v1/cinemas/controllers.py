@@ -2,7 +2,7 @@
 from flask import Blueprint, request
 
 from apps.common.response import ok
-from apps.models.cinemas import Cinema
+from apps.database.models import Cinema
 
 app = Blueprint('v1_cinemas', __name__, url_prefix='/v1/cinemas')
 

@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, abort, render_template
-from datetime import datetime
 
 from apps.common.response import ok
-from apps.common.database import db_session
-from apps.models.tests import Test
+from apps.database.models import Test
 
 app = Blueprint('test', __name__, url_prefix='/test')
 
@@ -16,18 +14,8 @@ def ping():
 
 @app.route('/db', methods=['get'])
 def db():
-    now = datetime.now()
-    t = Test(now)
-    db_session.add(t)
-    db_session.commit()
-
-    row = Test.query.filter_by(message=now).first()
-    message = row.message
-
-    Test.query.filter_by(message=now).delete()
-    db_session.commit()
-
-    return ok({'message': message})
+    row = Test.query.first()
+    return ok({'message': row.message})
 
 
 @app.route('/403', methods=['get'])

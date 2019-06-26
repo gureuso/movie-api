@@ -2,9 +2,7 @@
 from sqlalchemy import and_, func
 
 from apps.common.time import utc_to_local
-from apps.models.movies import Movie
-from apps.models.showtimes import Showtime
-from apps.models.theater_tickets import TheaterTicket
+from apps.database.models import Movie, Showtime, TheaterTicket
 
 
 class Movies:
