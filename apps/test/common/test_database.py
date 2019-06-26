@@ -11,9 +11,8 @@ class TestDatabase(unittest2.TestCase):
     def setUp(self):
         self.app = app.test_client()
         self.app.testing = True
-
-        t = Test('test01')
-        db.session.add(t)
+        test = Test('test01')
+        db.session.add(test)
         db.session.commit()
 
     def tearDown(self):

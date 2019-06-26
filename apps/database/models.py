@@ -6,6 +6,13 @@ import time
 from datetime import datetime
 
 from apps.database.session import db
+from apps.controllers.router import app
+
+
+def get_model(model):
+    if app.testing:
+        return model.test_model
+    return model
 
 
 def get_token():
@@ -27,18 +34,19 @@ class CinemaMixin:
         self.address = address
         self.detail_address = detail_address
 
-    def __repr__(self):
-        return '<Cinema {}>'.format(self.id)
+
+class TestCinemaModel(CinemaMixin, db.Model):
+    __tablename__ = 'test_cinemas'
+    __table_args__ = {'extend_existing': True}
 
 
-class Cinema(db.Model, CinemaMixin):
+class CinemaModel(CinemaMixin, db.Model):
     __tablename__ = 'cinemas'
     __table_args__ = {'extend_existing': True}
 
+    test_model = TestCinemaModel
 
-class TestCinema(CinemaMixin):
-    __tablename__ = 'test_cinemas'
-    __table_args__ = {'extend_existing': True}
+Cinema = get_model(CinemaModel)
 
 
 class MovieMixin:
@@ -59,22 +67,23 @@ class MovieMixin:
         self.running_time = running_time
         self.age_rating = age_rating
 
-    def __repr__(self):
-        return '<Movie {}>'.format(self.id)
 
-
-class Movie(db.Model, MovieMixin):
-    __tablename__ = 'movies'
-    __table_args__ = {'extend_existing': True}
-
-    showtimes = db.relationship('Showtime')
-
-
-class TestMovie(db.Model, MovieMixin):
+class TestMovieModel(MovieMixin, db.Model):
     __tablename__ = 'test_movies'
     __table_args__ = {'extend_existing': True}
 
-    showtimes = db.relationship('TestShowtime')
+    showtimes = db.relationship('TestShowtimeModel')
+
+
+class MovieModel(MovieMixin, db.Model):
+    __tablename__ = 'movies'
+    __table_args__ = {'extend_existing': True}
+
+    test_model = TestMovieModel
+
+    showtimes = db.relationship('ShowtimeModel')
+
+Movie = get_model(MovieModel)
 
 
 class ShowtimeMixin:
@@ -90,28 +99,29 @@ class ShowtimeMixin:
         self.start_time = start_time
         self.end_time = end_time
 
-    def __repr__(self):
-        return '<Showtime {}>'.format(self.id)
 
-
-class Showtime(db.Model, ShowtimeMixin):
-    __tablename__ = 'showtimes'
-    __table_args__ = {'extend_existing': True}
-
-    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'))
-    theater_id = db.Column(db.Integer, db.ForeignKey('theaters.id'))
-
-    theater = db.relationship('Theater')
-
-
-class TestShowtime(db.Model, ShowtimeMixin):
+class TestShowtimeModel(ShowtimeMixin, db.Model):
     __tablename__ = 'test_showtimes'
     __table_args__ = {'extend_existing': True}
 
     movie_id = db.Column(db.Integer, db.ForeignKey('test_movies.id'))
     theater_id = db.Column(db.Integer, db.ForeignKey('test_theaters.id'))
 
-    theater = db.relationship('TestTheater')
+    theater = db.relationship('TestTheaterModel')
+
+
+class ShowtimeModel(ShowtimeMixin, db.Model):
+    __tablename__ = 'showtimes'
+    __table_args__ = {'extend_existing': True}
+
+    test_model = TestShowtimeModel
+
+    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'))
+    theater_id = db.Column(db.Integer, db.ForeignKey('theaters.id'))
+
+    theater = db.relationship('TheaterModel')
+
+Showtime = get_model(ShowtimeModel)
 
 
 class Test(db.Model):
@@ -123,9 +133,6 @@ class Test(db.Model):
 
     def __init__(self, message=None):
         self.message = message
-
-    def __repr__(self):
-        return '<Test {0}>'.format(self.message)
 
 
 class TheaterTicketMixin:
@@ -140,22 +147,23 @@ class TheaterTicketMixin:
         self.x = x
         self.y = y
 
-    def __repr__(self):
-        return '<TheaterTicket {}>'.format(self.id)
 
-
-class TheaterTicket(db.Model, TheaterTicketMixin):
-    __tablename__ = 'theater_tickets'
-    __table_args__ = {'extend_existing': True}
-
-    theater_id = db.Column(db.Integer(), db.ForeignKey('theaters.id'))
-
-
-class TestTheaterTicket(db.Model, TheaterTicketMixin):
+class TestTheaterTicketModel(TheaterTicketMixin, db.Model):
     __tablename__ = 'test_theater_tickets'
     __table_args__ = {'extend_existing': True}
 
     theater_id = db.Column(db.Integer(), db.ForeignKey('test_theaters.id'))
+
+
+class TheaterTicketModel(TheaterTicketMixin, db.Model):
+    __tablename__ = 'theater_tickets'
+    __table_args__ = {'extend_existing': True}
+
+    test_model = TestTheaterTicketModel
+
+    theater_id = db.Column(db.Integer(), db.ForeignKey('theaters.id'))
+
+TheaterTicket = get_model(TheaterTicketModel)
 
 
 class TheaterMixin:
@@ -169,22 +177,23 @@ class TheaterMixin:
         self.title = title
         self.seat = seat
 
-    def __repr__(self):
-        return '<Theater {}>'.format(self.id)
 
-
-class Theater(db.Model, TheaterMixin):
-    __tablename__ = 'theaters'
-    __table_args__ = {'extend_existing': True}
-
-    theater_tickets = db.relationship('TheaterTicket')
-
-
-class TestTheater(db.Model, TheaterMixin):
+class TestTheaterModel(TheaterMixin, db.Model):
     __tablename__ = 'test_theaters'
     __table_args__ = {'extend_existing': True}
 
-    theater_tickets = db.relationship('TestTheaterTicket')
+    theater_tickets = db.relationship('TestTheaterTicketModel')
+
+
+class TheaterModel(TheaterMixin, db.Model):
+    __tablename__ = 'theaters'
+    __table_args__ = {'extend_existing': True}
+
+    test_model = TestTheaterModel
+
+    theater_tickets = db.relationship('TheaterTicketModel')
+
+Theater = get_model(TheaterModel)
 
 
 class UserMixin:
@@ -207,15 +216,16 @@ class UserMixin:
         self.profile_url = profile_url
         self.token = token
 
-    def __repr__(self):
-        return '<User {}>'.format(self.id)
+
+class TestUserModel(UserMixin, db.Model):
+    __tablename__ = 'test_users'
+    __table_args__ = {'extend_existing': True}
 
 
-class User(db.Model, UserMixin):
+class UserModel(UserMixin, db.Model):
     __tablename__ = 'users'
     __table_args__ = {'extend_existing': True}
 
+    test_model = TestUserModel
 
-class TestUser(db.Model, UserMixin):
-    __tablename__ = 'test_users'
-    __table_args__ = {'extend_existing': True}
+User = get_model(UserModel)

@@ -14,8 +14,12 @@ def ping():
 
 @app.route('/db', methods=['get'])
 def db():
-    row = Test.query.first()
-    return ok({'message': row.message})
+    test = Test.query.first()
+    if test:
+        message = test.message
+    else:
+        message = None
+    return ok({'message': message})
 
 
 @app.route('/403', methods=['get'])

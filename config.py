@@ -78,7 +78,6 @@ class ProductionConfig(FlaskConfig):
 class DevelopmentConfig(FlaskConfig):
     SQLALCHEMY_ECHO = True
     DEBUG = True
-    TESTING = True
 
 
 class TestingConfig(FlaskConfig):
