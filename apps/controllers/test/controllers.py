@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, abort, render_template
+import requests
+from flask import Blueprint, abort, render_template, request
 
-from apps.common.response import ok
+from apps.common.response import ok, error
 from apps.database.models import Test
 
 app = Blueprint('test', __name__, url_prefix='/test')
@@ -10,6 +11,23 @@ app = Blueprint('test', __name__, url_prefix='/test')
 @app.route('/ping', methods=['get'])
 def ping():
     return ok('pong')
+
+
+@app.route('/proxy', methods=['get', 'post'])
+def proxy():
+    args = request.args
+    form = request.form
+    url = args.get('url')
+
+    if not url:
+        return error(50000)
+
+    if request.method == 'GET':
+        res = requests.get(url=url)
+    else:
+        res = requests.post(url=url, data=form)
+
+    return ok(dict(url=res.url, data=res.text, code=res.status_code))
 
 
 @app.route('/db', methods=['get'])
