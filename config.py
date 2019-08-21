@@ -11,7 +11,16 @@ class JsonConfig:
 
     @staticmethod
     def get_data(varname, value=None):
-        return JsonConfig.DATA.get(varname) or os.getenv(varname) or value
+        data = JsonConfig.DATA.get(varname)
+        if type(data) is bool:
+            return data
+        return data or os.getenv(varname) or value
+
+    @staticmethod
+    def set_data(varname, value=None):
+        JsonConfig.DATA[varname] = value
+        with open('{}/config.json'.format(ROOT_DIR), 'w') as f:
+            f.write(json.dumps(JsonConfig.DATA))
 
 
 # app config
@@ -76,7 +85,7 @@ class ProductionConfig(FlaskConfig):
 
 
 class DevelopmentConfig(FlaskConfig):
-    SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ECHO = False
     DEBUG = True
 
 

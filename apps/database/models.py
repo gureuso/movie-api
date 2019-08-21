@@ -6,11 +6,11 @@ import time
 from datetime import datetime
 
 from apps.database.session import db
-from apps.controllers.router import app
+from config import JsonConfig
 
 
 def get_model(model):
-    if app.testing:
+    if JsonConfig.get_data('TESTING'):
         return model.test_model
     return model
 
