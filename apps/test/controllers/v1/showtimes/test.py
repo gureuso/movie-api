@@ -10,7 +10,7 @@ from apps.controllers.router import app
 from apps.database.models import Movie, Cinema, Theater, Showtime
 
 
-@freeze_time('2019-06-21 12:00:00')
+@freeze_time('2019-06-21 4:00:00')
 class Test(unittest2.TestCase):
     def setUp(self):
         self.app = app.test_client()
@@ -42,8 +42,25 @@ class Test(unittest2.TestCase):
         db.session.delete(self.showtime)
         db.session.commit()
 
+    def test_showtime_time_range(self):
+        with freeze_time('2019-06-20 15:00:00'):
+            result = self.app.get('/v1/showtimes')
+            self.assertEqual(result.status_code, 200)
+            data = json.loads(result.data.decode('utf-8'))['data']
+            movies = data['movies']
+            for movie in movies:
+                for showtime in movie['showtimes']:
+                    self.assertNotEqual(showtime, [])
+
+        with freeze_time('2019-06-21 15:00:00'):
+            result = self.app.get('/v1/showtimes')
+            self.assertEqual(result.status_code, 200)
+            data = json.loads(result.data.decode('utf-8'))['data']
+            movies = data['movies']
+            self.assertEqual(movies, [])
+
     def test_over_the_time(self):
-        with freeze_time('2019-06-22 00:00:00'):
+        with freeze_time('2019-06-21 15:00:00'):
             result = self.app.get('/v1/theaters/{}/showtimes/{}'.format(self.theater.id, self.showtime.id))
             self.assertEqual(result.status_code, 404)
             data = json.loads(result.data.decode('utf-8'))
