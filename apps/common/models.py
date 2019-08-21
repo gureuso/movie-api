@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from sqlalchemy import and_, func
 
-from apps.common.time import utc_to_local
+from apps.common.time import utc2local
 from apps.database.models import Movie, Showtime, TheaterTicket
 
 
@@ -37,8 +37,8 @@ class Movies:
             theater_seat -= seat_cnt
 
             showtime_result = showtime.asdict()
-            showtime_result['start_time'] = utc_to_local(showtime_result['start_time']).strftime('%Y%m%d%H%M')
-            showtime_result['end_time'] = utc_to_local(showtime_result['end_time']).strftime('%Y%m%d%H%M')
+            showtime_result['start_time'] = utc2local(showtime_result['start_time']).strftime('%Y%m%d%H%M')
+            showtime_result['end_time'] = utc2local(showtime_result['end_time']).strftime('%Y%m%d%H%M')
             showtime_result['theater'] = dict(id=theater.id, cinema_id=theater.cinema_id, title=theater.title,
                                               seat=theater_seat)
             showtime_list.append(showtime_result)

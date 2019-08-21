@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
 from flask import Blueprint
 
 from apps.common.response import ok, error
-from apps.common.time import utc_to_local
+from apps.common.time import utc2local, current_time
 from apps.database.models import Showtime, Theater, TheaterTicket
 
 app = Blueprint('v1_theaters', __name__, url_prefix='/v1/theaters')
@@ -12,7 +11,7 @@ app = Blueprint('v1_theaters', __name__, url_prefix='/v1/theaters')
 @app.route('/<int:theater_id>/showtimes/<int:showtime_id>', methods=['get'])
 def detail(theater_id, showtime_id):
     showtime = Showtime.query.filter_by(id=showtime_id, theater_id=theater_id).first()
-    if not utc_to_local(showtime.start_time) > utc_to_local(datetime.now()):
+    if not utc2local(showtime.start_time) > current_time():
         return error(40400)
 
     theater = Theater.query.filter_by(id=theater_id).first()
