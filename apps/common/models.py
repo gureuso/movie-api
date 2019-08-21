@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime, timedelta
 from sqlalchemy import and_, func
 
 from apps.common.time import utc2local
@@ -26,8 +27,10 @@ class Movies:
         return movies.filter(func.date(Showtime.start_time) == self.selected_date).all()
 
     def get_showtimes(self, movie):
+        query_start_time = datetime.strptime(self.selected_date, '%Y-%m-%d') - timedelta(hours=9)
+        query_end_time = datetime.strptime(self.selected_date, '%Y-%m-%d') + timedelta(days=1) - timedelta(hours=9)
         showtime_list = []
-        showtimes = Showtime.query.filter(Showtime.start_time.like(self.selected_date+'%'),
+        showtimes = Showtime.query.filter(Showtime.start_time >= query_start_time, Showtime.end_time < query_end_time,
                                           Showtime.movie_id == movie.id).all()
         showtimes = sorted(showtimes, key=lambda movie: movie.start_time)
         for showtime in showtimes:
