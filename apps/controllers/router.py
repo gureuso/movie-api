@@ -9,7 +9,6 @@ from config import Config, JsonConfig
 app = Flask(__name__, template_folder=Config.TEMPLATES_DIR, static_folder=Config.STATIC_DIR)
 app.config.from_object(Config.from_app_mode())
 BlueprintRegister(app=app, module_path='apps.controllers', controller_name='controllers').register()
-JsonConfig.set_data('TESTING', False)
 
 
 @app.errorhandler(403)
