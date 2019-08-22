@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
-from sqlalchemy import and_, func
+from sqlalchemy import and_
 
 from apps.common.time import utc2local
 from apps.database.models import Movie, Showtime, TheaterTicket
@@ -11,6 +11,8 @@ class Movies:
         self.movie_id = movie_id
         self.selected_date = selected_date
         self.cinema_id = cinema_id
+        self.query_start_time = datetime.strptime(self.selected_date, '%Y-%m-%d') - timedelta(hours=9)
+        self.query_end_time = datetime.strptime(self.selected_date, '%Y-%m-%d') + timedelta(days=1) - timedelta(hours=9)
 
     def get_movies(self):
         if self.cinema_id:
@@ -24,14 +26,12 @@ class Movies:
 
         if self.movie_id:
             movies = movies.filter_by(movie_id=self.movie_id)
-        return movies.filter(func.date(Showtime.start_time) == self.selected_date).all()
+        return movies.filter(Showtime.start_time >= self.query_start_time, Showtime.end_time < self.query_end_time).all()
 
     def get_showtimes(self, movie):
-        query_start_time = datetime.strptime(self.selected_date, '%Y-%m-%d') - timedelta(hours=9)
-        query_end_time = datetime.strptime(self.selected_date, '%Y-%m-%d') + timedelta(days=1) - timedelta(hours=9)
         showtime_list = []
-        showtimes = Showtime.query.filter(Showtime.start_time >= query_start_time, Showtime.end_time < query_end_time,
-                                          Showtime.movie_id == movie.id).all()
+        showtimes = Showtime.query.filter(Showtime.start_time >= self.query_start_time,
+                                          Showtime.end_time < self.query_end_time, Showtime.movie_id == movie.id).all()
         showtimes = sorted(showtimes, key=lambda movie: movie.start_time)
         for showtime in showtimes:
             theater = showtime.theater

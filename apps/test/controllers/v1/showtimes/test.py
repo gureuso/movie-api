@@ -10,7 +10,7 @@ from apps.controllers.router import app
 from apps.database.models import Movie, Cinema, Theater, Showtime
 
 
-@freeze_time('2019-06-21 4:00:00')
+@freeze_time('2019-06-21 15:00:00')
 class Test(unittest2.TestCase):
     def setUp(self):
         self.app = app.test_client()
@@ -43,24 +43,20 @@ class Test(unittest2.TestCase):
         db.session.commit()
 
     def test_showtime_time_range(self):
-        with freeze_time('2019-06-20 15:00:00'):
+        with freeze_time('2019-06-22 00:00:00'):
             result = self.app.get('/v1/showtimes')
             self.assertEqual(result.status_code, 200)
             data = json.loads(result.data.decode('utf-8'))['data']
             movies = data['movies']
+            showtime_id = None
             for movie in movies:
                 for showtime in movie['showtimes']:
-                    self.assertNotEqual(showtime, [])
-
-        with freeze_time('2019-06-21 15:00:00'):
-            result = self.app.get('/v1/showtimes')
-            self.assertEqual(result.status_code, 200)
-            data = json.loads(result.data.decode('utf-8'))['data']
-            movies = data['movies']
-            self.assertEqual(movies, [])
+                    if showtime['id'] == self.showtime.id:
+                        showtime_id = showtime['id']
+            self.assertEqual(self.showtime.id, showtime_id)
 
     def test_over_the_time(self):
-        with freeze_time('2019-06-21 15:00:00'):
+        with freeze_time('2019-06-22 15:00:00'):
             result = self.app.get('/v1/theaters/{}/showtimes/{}'.format(self.theater.id, self.showtime.id))
             self.assertEqual(result.status_code, 404)
             data = json.loads(result.data.decode('utf-8'))
@@ -72,18 +68,21 @@ class Test(unittest2.TestCase):
         data = json.loads(result.data.decode('utf-8'))['data']
         week = data['week']
         selected = data['selected']
-        self.assertEqual(week[0]['date'], '2019-06-21')
-        self.assertEqual(selected['date'], '2019-06-21')
+        self.assertEqual(week[0]['date'], '2019-06-22')
+        self.assertEqual(selected['date'], '2019-06-22')
 
-        result = self.app.get('/v1/showtimes?date={}'.format('2019-06-22'))
+        result = self.app.get('/v1/showtimes?date={}'.format('2019-06-23'))
         self.assertEqual(result.status_code, 200)
         data = json.loads(result.data.decode('utf-8'))['data']
         selected = data['selected']
-        self.assertEqual(selected['date'], '2019-06-22')
+        self.assertEqual(selected['date'], '2019-06-23')
         movies = data['movies']
+        showtime_id = None
         for movie in movies:
             for showtime in movie['showtimes']:
-                self.assertNotEqual(showtime['id'], self.showtime.id)
+                if showtime['id'] == self.showtime.id:
+                    showtime_id = showtime['id']
+        self.assertNotEqual(self.showtime.id, showtime_id)
 
 
 if __name__ == '__main__':

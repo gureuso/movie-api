@@ -4,7 +4,7 @@ from flask import Flask
 from apps.common.register import BlueprintRegister
 from apps.common.response import error
 
-from config import Config, JsonConfig
+from config import Config
 
 app = Flask(__name__, template_folder=Config.TEMPLATES_DIR, static_folder=Config.STATIC_DIR)
 app.config.from_object(Config.from_app_mode())

@@ -6,7 +6,7 @@ from redis import Redis
 from config import Config
 from apps.controllers.router import app
 
-db = SQLAlchemy(app)
+db = SQLAlchemy(app, session_options={'expire_on_commit': False})
 make_class_dictable(db.Model)
 cache = Redis(host=Config.REDIS_HOST, password=Config.REDIS_PASSWD)
 
